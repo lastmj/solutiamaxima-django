@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 
 ON_PYTHON_ANYWHERE = False
-if os.getcwd() == '/home/lastmj:
+if os.getcwd() == '/home/lastmj':
     ON_PYTHON_ANYWHERE = True
 
 #ON_OPENSHIFT = False TODO change this to check if we are on python anywhere
