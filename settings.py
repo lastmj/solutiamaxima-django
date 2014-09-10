@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 import imp
 
+ON_PYTHON_ANYWHERE = False
+if os.environ.has_key('PYTHONSTARTUP'):
+    ON_PYTHON_ANYWHERE = True
+
 #ON_OPENSHIFT = False TODO change this to check if we are on python anywhere
 #if os.environ.has_key('OPENSHIFT_REPO_DIR'):
 #     ON_OPENSHIFT = True
@@ -25,6 +29,7 @@ BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 default_keys = { 'SECRET_KEY': 'vm4rl5*ymb@2&d_(gc$gb-^twq9w(u69hi--%$5xrh!xk(t%hw' }
 use_keys = default_keys
+
 #if ON_OPENSHIFT: TODO change this to check if we are on python anywhere
 #     imp.find_module('openshiftlibs')
 #     import openshiftlibs
@@ -33,12 +38,10 @@ use_keys = default_keys
 SECRET_KEY = use_keys['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#if ON_OPENSHIFT: TODO change this to check if we are on python anywhere
-#     DEBUG = True
-#else:
-#     DEBUG = True
-
-DEBUG = True
+if ON_PYTHON_ANYWHERE:
+     DEBUG = True
+else:
+     DEBUG = True
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -101,7 +104,7 @@ TEMPLATE_DIRS = (
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-if ON_OPENSHIFT:
+if ON_PYTHON_ANYWHERE:
      DATABASES = {
          'default': {
 		    'ENGINE': 'django.db.backends.mysql',
