@@ -111,7 +111,7 @@ if ON_PYTHON_ANYWHERE:
 		    'NAME': 'lastmj$solutiamaxima',
 		    'USER': 'lastmj',
 		    'PASSWORD': 'solmaxutiaima5010',
-		    'HOST': mysql.server,
+		    'HOST': 'mysql.server',
 		    'PORT':'',
          }
      }
