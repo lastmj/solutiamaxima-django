@@ -1,5 +1,5 @@
 """
-Django settings for openshift project.
+Django settings for Python Anywhere project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.6/topics/settings/
@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 import imp
 
-ON_OPENSHIFT = False
-if os.environ.has_key('OPENSHIFT_REPO_DIR'):
-     ON_OPENSHIFT = True
+#ON_OPENSHIFT = False TODO change this to check if we are on python anywhere
+#if os.environ.has_key('OPENSHIFT_REPO_DIR'):
+#     ON_OPENSHIFT = True
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -25,18 +25,20 @@ BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 default_keys = { 'SECRET_KEY': 'vm4rl5*ymb@2&d_(gc$gb-^twq9w(u69hi--%$5xrh!xk(t%hw' }
 use_keys = default_keys
-if ON_OPENSHIFT:
-     imp.find_module('openshiftlibs')
-     import openshiftlibs
-     use_keys = openshiftlibs.openshift_secure(default_keys)
+#if ON_OPENSHIFT: TODO change this to check if we are on python anywhere
+#     imp.find_module('openshiftlibs')
+#     import openshiftlibs
+#     use_keys = openshiftlibs.openshift_secure(default_keys)
 
 SECRET_KEY = use_keys['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if ON_OPENSHIFT:
-     DEBUG = True
-else:
-     DEBUG = True
+#if ON_OPENSHIFT: TODO change this to check if we are on python anywhere
+#     DEBUG = True
+#else:
+#     DEBUG = True
+
+DEBUG = True
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -103,11 +105,10 @@ if ON_OPENSHIFT:
      DATABASES = {
          'default': {
 		    'ENGINE': 'django.db.backends.mysql',
-		    'NAME': 'solutiamaxima',
-		    'USER': 'adminnarH2TU',
-		    'PASSWORD': '5U7J9RQUwUA_',
-		    'HOST': os.environ['OPENSHIFT_MYSQL_DB_HOST'],
-		    'PORT': os.environ['OPENSHIFT_MYSQL_DB_PORT'],
+		    'NAME': 'lastmj$solutiamaxima',
+		    'USER': 'lastmj',
+		    'PASSWORD': 'solmaxutiaima5010',
+		    'HOST': mysql.server,
          }
      }
 else:
@@ -138,6 +139,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'server-static')
+STATIC_ROOT = '/home/lastmj/solutiamaxima/server-static/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
