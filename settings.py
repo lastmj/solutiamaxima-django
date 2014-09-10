@@ -10,10 +10,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-print os.getcwd()
-
 ON_PYTHON_ANYWHERE = False
-if os.environ.has_key('PYTHONSTARTUP'):
+if os.getcwd() == '/home/lastmj:
     ON_PYTHON_ANYWHERE = True
 
 #ON_OPENSHIFT = False TODO change this to check if we are on python anywhere
