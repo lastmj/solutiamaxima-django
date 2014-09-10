@@ -1,0 +1,129 @@
+body
+{
+	text-align:center;
+}
+
+.header
+{
+	margin-top:75px;
+	display:inline-block;
+}
+
+.subtitle
+{
+	margin-top:-15px;
+}
+
+.outerDiv
+{
+	display:inline-block;
+	text-align:center;
+	width:100%;
+	height:100%;
+}
+
+.categoryGroup
+{
+	display:inline-block;
+	margin-top:50px;
+}
+
+.problem
+{
+	display:inline-block;
+	box-shadow: 0px 0px 3px #68B4DF;
+	padding:10px;
+	font-size:1.5em;
+	margin:10px;
+	font-family:Ubuntu;
+}
+
+a.problemLink
+{
+	display:block;
+	color:black;
+	text-decoration:none;
+}
+
+.titleInput
+{
+	/*position:absolute;
+	top:50px;
+	left:165px;*/
+	display:inline-block;
+	font-size:1.5em;
+	margin-bottom:10px;
+}
+
+.wrapperDiv
+{
+    text-align:center;
+    margin-top:65px;
+}
+
+.showHelpDiv
+{
+    font-size:.75em;
+	color:grey;
+	cursor:pointer;
+	position:absolute;
+	display:inline-block;
+	margin-left:500px;
+	margin-left:395px;
+	margin-top:-30px;
+}
+
+.codeElement
+{
+    visibility:hidden;
+    position:absolute;
+    margin-left:480px;
+	margin-top:-545px;
+	text-align:left;
+}
+
+.titleInput:focus
+{
+	outline:none !important;
+	border: 2px solid #68B4DF;
+	box-shadow:0 0 1px #68B4DF;
+}
+
+.textDiv
+{
+    display:inline-block;
+    width: 450px;
+	/*position:absolute;
+	width: 450px;
+	margin-top:65px;
+	margin-left:150px;*/
+}
+
+.codeDiv
+{
+    display:inline-block;
+    text-align:left;
+    margin-left:25px;
+	/*position:absolute;
+	margin-top:65px;
+	margin-left:630px;*/
+}
+
+.submitButton
+{
+	color:#0099FF;
+	background:white;
+	font-weight:bold;
+	font-family:Ubuntu;
+	border:none;
+	cursor:pointer;
+	width:90px;
+	height:25px;
+	font-size:1.25em;
+	/*position:absolute;
+	top:615px;
+	left:575px;*/
+	display:inline-block;
+	margin-top:10px;
+	box-shadow: 0px 0px 1px #68B4DF
+}
