@@ -14,10 +14,10 @@ from publicproblem.models import PublicProblem
 def caja(request, problem_id=None, authToken=None):
     signer = TimestampSigner()
 
-    if request.GET.get('type') == 'getToken' and settings.ON_OPENSHIFT == True:
+    if request.GET.get('type') == 'getToken' and settings.ON_PYTHON_ANYWHERE == True:
         value = signer.sign(binascii.b2a_hex(os.urandom(15)))
         return HttpResponse("http://www.solutiamaxima.com/publicproblem/" + request.GET.get('id') + "/" + value)
-    elif request.GET.get('type') == 'getToken' and settings.ON_OPENSHIFT == False:
+    elif request.GET.get('type') == 'getToken' and settings.ON_PYTHON_ANYWHERE == False:
         value = signer.sign(binascii.b2a_hex(os.urandom(15)))
         return HttpResponse("/publicproblem/" + request.GET.get('id') + "/" + value)
 
