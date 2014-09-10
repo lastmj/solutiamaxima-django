@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{% static 'createproblem/style.css' %}" />
+	<script src="{% static 'createproblem/ckeditor/ckeditor.js' %}"></script>
+	<script src="{% static 'createproblem/codemirror-4.1/lib/codemirror.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'createproblem/codemirror-4.1/lib/codemirror.css' %}">
+	<script src="{% static 'createproblem/codemirror-4.1/mode/javascript/javascript.js' %}"></script>
+	<script src="{% static 'createproblem/codemirror-4.1/addon/display/placeholder.js' %}"></script>
+	
+	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+	<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	<!--Offline Script<script src="{% static 'offline-scripts/run_prettify.js' %}"></script>-->
+	<!--Offline Script<script src="{% static 'offline-scripts/MathJax.js?config=TeX-AMS-MML_HTMLorMML' %}"></script>-->
+	
+	<script src="{% static 'caja.js' %}"></script>
+	<script>
+		$(document).ready(function()
+			{
+				//initialize ckeditor
+				editor = CKEDITOR.replace("textEditor");
+				
+				//initialize CodeMirror
+				var codeTextArea = document.getElementById("codeEditor");
+				
+				{% if problem %}
+				    var userJavascript;
+				    $.ajax({
+						    url:"{% url 'createproblem:getjavascript' problem_id=problem.id %}", 
+						    success: function(data)
+								    {
+									    userJavascript = data;
+								    },
+						    async:false
+						    });
+				    codeEditor = CodeMirror.fromTextArea(codeTextArea, 
+				    {
+					    lineWrapping:false
+				    });
+				    codeEditor.setValue(userJavascript);
+				{% else %}
+				    codeEditor = CodeMirror.fromTextArea(codeTextArea, 
+				    {
+					    lineWrapping:false
+				    });
+				{% endif %}
+				
+				CKEDITOR.on("instanceReady", function(event)
+				{
+					$('.loader').fadeOut('slow');
+				});
+			}
+		);
+	</script>
+{% endblock %}
+
+{% block body %}
+	<div class="loader"></div>
+	<div id="guest"></div>
+	<div id="greyOut" class="greyOut"></div>
+	<div id="problemWrapper" class="problemWrapper">
+		<div id="problemDiv" class="problemDiv"><span id='mathSpan' class='mathSpan'></span></div>
+		<div id="answerButtonDiv" class="answerButtonDiv" onclick="showAnswer(this)">answer</div>
+		<div id="arrowDiv" class="arrowRight" onclick="cajole()"></div>
+		<div id="actualAnswer" class="actualAnswer"></div>
+		<div class="hidePreviewDiv" onclick="hidePreview()">close</div>
+	</div>
+	<div class="wrapperDiv">
+	
+	{% if problem %}
+	    <input value="{{problem.title}}" type="text" name="title" form="inputForm" class="titleInput" size="62" maxlength="100" placeholder="Describe your problem here. For example: A two number addition problem"><br>
+	{% else %}
+	    <input type="text" name="title" form="inputForm" class="titleInput" size="62" maxlength="100" placeholder="Describe your problem here. For example: A two number addition problem"><br>
+	{% endif %}
+
+	<div class="textDiv">
+		<textarea id="textEditor" name="textEditor" 
+		placeholder="Create the text of your problem here.<br>
+		If you need a random number, use r1.<br>
+		If you need more random numbers, use r2, r3, etc.<br>
+		Use the &Sigma; menu to enter math and chemical formulas in TeX" form="inputForm">{% if problem %}{{problem.text}}{% endif %}</textarea>
+	</div>
+		
+	<div class="codeDiv">
+			<textarea id="codeEditor" name="codeEditor" 
+placeholder="This is where you make your problem work. 
+Follow the examples below:
+
+//This is a comment - comments are completely 
+//ignored. Use them to record your thoughts
+
+r1.min = 5 //r1 now has a minimum value of 5                                 
+r1.max = 25 //r1 now has a maximum value of 25
+
+//set the answer variable equal to the solution
+answer = (r1 * 2) / 50" form="inputForm"></textarea>
+		</div>
+		
+		<form id="inputForm" action="{% url 'createproblem:submitProblem' %}" method="post">
+			{% csrf_token %}
+			<input type="submit" value="Submit" class="submitButton">
+			<input type="hidden" value="{{categoryId}}" name="categoryId">
+			<input type="hidden" value="{{problem.id}}" name="problemId">
+			<input type="hidden" value="{{nextURLTemplateVariable}}" name="nextURL">
+		</form>
+		<div id="showHelpDiv" class="showHelpDiv" onclick="showHelp(this)">
+			show help
+		</div>
+		<code id="codeElement" class="codeElement prettyprint">
+		    // combine strings and numbers<br />
+		    numApples = 45<br />
+		    numOranges = 65<br />
+		    answer = "I have " + numApples<br />
+		     + " apples and " + numOranges + " oranges"<br />
+		    // answer now contains<br />
+		    // "I have 45 apples and 65 oranges"<br />
+		    <br />
+		    // addition <br />
+            answer = 50 + 30<br />
+            <br />
+            //subtraction<br />
+            answer = 789 - 345<br />
+            <br />
+            // multiplication<br />
+            answer = 3 * 7<br />
+            <br />
+            // division<br />
+            answer = 45 / 67<br />
+            <br />
+            // remainder (modulo)<br />
+            answer = 5 % 3<br />
+            <br />
+            // square root<br />
+            answer = Math.sqrt(144)<br />
+            <br />
+            // powers/exponents<br />
+            answer = Math.pow(4, 2)<br />
+            <br />
+            // absolute value<br />
+            answer = Math.abs(-46)<br />
+            <br />
+            //natural log<br />
+            answer = Math.log(2)<br />
+            <br />
+            // sine, cosine, tangent<br />
+            answer = Math.sin(78)<br />
+            answer = Math.cos(45)<br />
+            answer = Math.tan(23)<br />
+            <br />
+            // arc sine, arc cosine, arc tangent<br />
+            answer = Math.asin(.6)<br />
+            answer = Math.acos(.34)<br />
+            answer = Math.atan(56)<br />
+		</code>
+		<div class="previewButton" onclick="preview()">Preview</div>
+	</div>
+    <script>
+        var cajaFrame;
+	    
+	    //allows us to do ajax post requests
+	    //TODO verify license: taken straight from https://docs.djangoproject.com/en/1.6/ref/contrib/csrf/
+	    var csrftoken = $.cookie('csrftoken');
+	    
+	    $.ajaxSetup(
+	    {
+            beforeSend: function(xhr, settings) 
+            {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) 
+                {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+	    
+	    function csrfSafeMethod(method) 
+	    {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        //TODO verify license: end taken straight from https://docs.djangoproject.com/en/1.6/ref/contrib/csrf/
+    	//end allows us to do ajax post requests
+    
+        caja.initialize(
+	    {
+		    //cajaServer: 'https://caja.appspot.com/',
+		    cajaServer: 'http://www.solutiamaxima.com',
+		    debug: true,
+		    maxAcceptableSeverity: 'NO_KNOWN_EXPLOIT_SPEC_VIOLATION'
+	    });
+	    
+	    caja.load(document.getElementById('guest'), undefined, function(frame) 
+        {
+            caja.markFunction(receiveData);
+            tamedReceiveData = caja.tame(receiveData);
+            cajaFrame = frame;
+        });
+        
+        function receiveData(problemText, answer, authorName, code)
+    	{	
+    		$('#codeTag-caja-guest-0___').css('display', 'none'); //TODO this is not a good fix - figure out why the code displays on the page without this line
+    		$('#mathSpan').css('visibility', 'hidden');
+    		$('#mathSpan').html(problemText);
+    		$('#actualAnswer').html(answer);
+    	}
+        
+        function showHelp(t)
+    	{
+    		t.innerHTML = "hide";
+			t.onclick = hideHelp;
+			
+			$('#codeElement').css('visibility','visible');
+    	}
+    	
+    	function hideHelp()
+    	{
+    		//the reason I am not using jquery in this method is because I can't figure out how to set the onclick with jquery
+    		var helpButton = document.getElementById("showHelpDiv");
+	
+			helpButton.innerHTML = "show help";
+			helpButton.onclick = function() { showHelp(helpButton) };
+	
+			$('#codeElement').css('visibility','hidden');
+    	}
+    	
+    	function showAnswer(t)
+    	{
+    	    t.innerHTML = "hide";
+			t.onclick = hideAnswer;
+			
+			$('#actualAnswer').css('visibility', 'visible');
+    	}
+    	
+    	function hideAnswer()
+    	{
+    		//the reason I am not using jquery in this method is because I can't figure out how to set the onclick with jquery
+    	    var answerButton = document.getElementById("answerButtonDiv");
+	
+			answerButton.innerHTML = "answer";
+			answerButton.onclick = function() { showAnswer(answerButton) };
+	
+	        $('#actualAnswer').css('visibility', 'hidden');
+    	}
+    	
+    	function preview()
+    	{    	    	
+    	    $.ajax({
+					url:"{% url 'createproblem:submitPreview' %}", 
+					type:'POST',
+					data: {problemText: editor.getData(), problemJavaScript: codeEditor.getValue()},
+					async:false
+				});
+				
+				cajole();
+				
+				$('#greyOut').css('visibility', 'visible');
+    	        $('#problemWrapper').css('visibility', 'visible');
+    	}
+    	
+    	function hidePreview()
+    	{   
+    		hideAnswer();
+            $('#greyOut').css('visibility', 'hidden');
+            $('#problemWrapper').css('visibility', 'hidden');
+            $('#mathSpan').css('visibility', 'hidden');
+    	}
+    	
+    	function cajole()
+		{		
+		    var url;
+		
+	       $.ajax({
+					url:"{% url 'publicproblem:cajaAuthUrl' %}", 
+					type:'GET',
+					data: { id:{{id}}, type:'getToken' },
+					success: function(data)
+							{
+		                        url = data;
+							},
+					async:false
+					});
+		
+			cajaFrame.code(url, "text/html").api({ transferData:tamedReceiveData }).run(function(result)
+			{ 
+				MathJax.Hub.Queue(["Typeset",MathJax.Hub,"problemDiv"], function() 
+				{ 
+					$('#mathSpan').css('visibility', 'visible');
+					setProblemDivHeight(); //will only run the first time
+				});
+			});
+			
+			hideAnswer();
+		}
+		
+		function setProblemDivHeight()
+    	{
+    		setProblemDivHeight = Function(""); //this function will only run one time because of this
+    		$('#problemDiv').height($('#problemDiv').height());
+    	}
+    </script>
+{% endblock %}

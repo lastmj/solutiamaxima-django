@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'customauthentication/style.css' %}" />
+{% endblock %}
+
+{% block body %}	
+	<form action="/accounts/auth/" method="post" class="formDiv">
+		{% csrf_token %}
+		
+		<input type="text" name="username" id="username" placeholder="username" class="loginInputs">
+		<input type="password" name="password" id="password" placeholder="password" class="loginInputs">
+		
+		<input type="submit" value="Login" class="loginButton" />
+	</form>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{% static 'createproblem/style.css' %}" />
+	<script src="{% static 'createproblem/ckeditor/ckeditor.js' %}"></script>
+	<script src="{% static 'createproblem/codemirror-4.1/lib/codemirror.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'createproblem/codemirror-4.1/lib/codemirror.css' %}">
+	<script src="{% static 'createproblem/codemirror-4.1/mode/javascript/javascript.js' %}"></script>
+	<script src="{% static 'createproblem/codemirror-4.1/addon/display/placeholder.js' %}"></script>
+	
+	<script>
+		$(document).ready(function()
+			{
+				//initialize ckeditor
+				CKEDITOR.replace("textEditor");
+				
+				//initialize CodeMirror
+				var codeTextArea = document.getElementById("codeEditor");
+				var codeEditor = CodeMirror.fromTextArea(codeTextArea, 
+				{
+					lineWrapping:false
+				});
+				
+				CKEDITOR.on("instanceReady", function(event)
+				{
+					$('.loader').fadeOut('slow');
+				});
+			}
+		);
+	</script>
+{% endblock %}
+
+{% block body %}
+    <script>
+        function showHelp(t)
+    	{
+    		t.innerHTML = "hide";
+			t.onclick = hideHelp;
+			
+			$('#codeElement').css('visibility','visible');
+    	}
+    	
+    	function hideHelp()
+    	{
+    		/*$('#codeButtonDiv').html('show code');
+    		$('#codeButtonDiv').attr("onclick", function() { showCode($('#codeButtonDiv')) });
+    		$('#codeElement').css('visibility','hidden');*/
+    		
+    		var helpButton = document.getElementById("showHelpDiv");
+	
+			helpButton.innerHTML = "show help";
+			helpButton.onclick = function() { showHelp(helpButton) };
+	
+			$('#codeElement').css('visibility','hidden');
+    	}
+    </script>
+		<div class="loader"></div>
+		<div class="wrapperDiv">
+		<input type="text" name="title" form="inputForm" class="titleInput" size="62" maxlength="100" placeholder="Describe your problem here. For example: A two number addition problem"><br>
+
+		<div class="textDiv">
+			<textarea id="textEditor" name="textEditor" 
+			placeholder="Create the text of your problem here.<br>
+			If you need a random number, use r1.<br>
+			If you need more random numbers, use r2, r3, etc.<br>
+			Use the &Sigma; menu to enter math and chemical formulas in TeX" form="inputForm"></textarea>
+		</div>
+		
+		<div class="codeDiv">
+			<textarea id="codeEditor" name="codeEditor" 
+placeholder="This is where you make your problem work. 
+Follow the examples below:
+
+//This is a comment - comments are completely 
+//ignored. Use them to record your thoughts
+
+r1.min = 5 //r1 now has a minimum value of 5                                 
+r1.max = 25 //r1 now has a maximum value of 25
+
+//set the answer variable equal to the solution
+answer = (r1 * 2) / 50" form="inputForm"></textarea>
+		</div>
+		
+		<form id="inputForm" action="{% url 'createproblem:submitProblem' %}" method="post">
+			{% csrf_token %}
+			<input type="submit" value="Submit" class="submitButton">
+			<input type="hidden" value="{{category}}" name="category">
+		</form>
+		<div id="showHelpDiv" class="showHelpDiv" onclick="showHelp(this)">
+		    show help
+		</div>
+		<code id="codeElement" class="codeElement prettyprint">
+		    // combine strings and numbers<br />
+		    numApples = 45<br />
+		    numOranges = 65<br />
+		    answer = "I have " + numApples.toString()<br />
+		     + " apples and " + numOranges.toString() + " oranges"<br />
+		    // answer now contains<br />
+		    // "I have 45 apples and 65 oranges"<br />
+		    <br />
+		    // addition <br />
+            answer = 50 + 30<br />
+            <br />
+            //subtraction<br />
+            answer = 789 - 345<br />
+            <br />
+            // multiplication<br />
+            answer = 3 * 7<br />
+            <br />
+            // division<br />
+            answer = 45 / 67<br />
+            <br />
+            // remainder (modulo)<br />
+            answer = 5 % 3<br />
+            <br />
+            // square root<br />
+            answer = Math.sqrt(144)<br />
+            <br />
+            // powers/exponents<br />
+            answer = Math.pow(4, 2)<br />
+            <br />
+            // absolute value<br />
+            answer = Math.abs(-46)<br />
+            <br />
+            //natural log<br />
+            answer = Math.log(2)<br />
+            <br />
+            // sine, cosine, tangent<br />
+            answer = Math.sin(78)<br />
+            answer = Math.cos(45)<br />
+            answer = Math.tan(23)<br />
+            <br />
+            // arc sine, arc cosine, arc tangent<br />
+            answer = Math.asin(.6)<br />
+            answer = Math.acos(.34)<br />
+            answer = Math.atan(56)<br />
+		</code>
+		</div>
+{% endblock %}

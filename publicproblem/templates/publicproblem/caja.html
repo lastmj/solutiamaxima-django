@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+<script src="{% static 'caja.js' %}"></script>
+
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!--Offline Script<script src="{% static 'offline-scripts/MathJax.js?config=TeX-AMS-MML_HTMLorMML' %}"></script>-->
+
+<link rel="stylesheet" href="{% static 'publicproblem/style.css' %}" />
+{% endblock %}
+
+{% block body %}
+    <div class="loader"></div>
+	<div id="guest"></div>
+	<div id="problemWrapper" class="problemWrapper">
+		<div id="problemDiv" class="problemDiv"><span id='mathSpan' class='mathSpan'></span></div>
+	
+		<div id="codeButtonDiv" class="codeButtonDiv" onclick="showCode(this)">show code</div>
+		<input id="answerInput" type="text" class="answerInput" autofocus></input>
+		
+		{% if verifiedByUser %}
+			<button id="checkAnswerButton" type="button" class="checkAnswerButton" onclick="checkAnswer()">Check</button>
+		{% else %}
+			<button id="checkAnswerButton" type="button" class="checkAnswerButton" onclick="checkAnswer()">Check</button>
+		{% endif %}
+		
+		<div id="authorDiv" class="authorDiv"></div>
+		<div id="arrowDiv" class="arrowRight" onclick="cajole()"></div>
+		<div id="actualAnswerDiv" class="actualAnswerDiv"></div>
+		<div id="codeContainer" class="codeContainer">
+		    <code id="codeElement" class="prettyprint"></code>
+		</div>
+		
+		{% if verifiedByUser and problem.verified == False %}
+			<span id="verificationSpan" title="You have verified this problem" class="verificationSpanUnverified" onclick="checkAnswer()">Verified</span>
+		{% elif problem.verified == False %}
+			<span id="verificationSpan" title="Solve this problem 3 times in a row to verify it" class="verificationSpanVerified" onclick="checkAnswer()">3</span>
+		{% endif %}
+	</div>	
+    <script>
+    	//allows us to do ajax post requests
+	    //TODO verify license: taken straight from https://docs.djangoproject.com/en/1.6/ref/contrib/csrf/
+	    var csrftoken = $.cookie('csrftoken');
+	    
+	    $.ajaxSetup(
+	    {
+            beforeSend: function(xhr, settings) 
+            {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) 
+                {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+	    
+	    function csrfSafeMethod(method) 
+	    {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        //TODO verify license: end taken straight from https://docs.djangoproject.com/en/1.6/ref/contrib/csrf/
+    	//end allows us to do ajax post requests
+    
+    	var verificationAttempts = 3; //TODO look into initialization in JavaScript
+        var cajaFrame;
+        var actualAnswer;
+        
+        caja.initialize(
+		{
+			//cajaServer: 'https://caja.appspot.com/',
+			cajaServer: 'http://www.solutiamaxima.com',
+			debug: true,
+			maxAcceptableSeverity: 'NO_KNOWN_EXPLOIT_SPEC_VIOLATION'
+		});
+		
+		caja.load(document.getElementById('guest'), undefined, function(frame) 
+		{
+			caja.markFunction(receiveData);
+			tamedReceiveData = caja.tame(receiveData);
+			cajaFrame = frame;
+		
+			var url;
+		
+	        $.ajax({
+					url:"{% url 'publicproblem:cajaAuthUrl' %}", 
+					type:'GET',
+					data: { id:{{id}}, type:'getToken' },
+					success: function(data)
+							{
+		                        url = data;
+							},
+					async:false
+					});
+			
+			frame.code(url, "text/html").api({ transferData:tamedReceiveData }).run(function(result)
+			{ 
+				MathJax.Hub.Queue(["Typeset",MathJax.Hub,"problemDiv"], function() 
+				{ 
+					$('#mathSpan').css('visibility', 'visible');
+					//$.getScript('https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js'); //TODO Offline-Only
+					$.getScript("{% static 'offline-scripts/run_prettify.js' %}"); //offline script //TODO Offline-Only
+					$('#problemDiv').height($('#problemDiv').height());
+				});
+				$('.loader').fadeOut('slow');
+			});
+		});
+		
+		function cajole()
+		{		
+			var url;
+		
+	        $.ajax({
+					url:"{% url 'publicproblem:cajaAuthUrl' %}", 
+					type:'GET',
+					data: { id:{{id}}, type:'getToken' },
+					success: function(data)
+							{
+		                        url = data;
+							},
+					async:false
+					});
+		
+			cajaFrame.code(url, "text/html").api({ transferData:tamedReceiveData }).run(function(result)
+			{ 
+				MathJax.Hub.Queue(["Typeset",MathJax.Hub,"problemDiv"], function() 
+				{ 
+					$('#mathSpan').css('visibility', 'visible');
+				});
+			});
+			
+			//hideAnswer();
+			$('#problemWrapper').css('box-shadow', '0px 0px 3px #68B4DF');
+			$('#answerInput').val('');
+			$('#answerInput').focus();
+			$('#answerInput').prop('disabled', false);
+			$('#checkAnswerButton').prop('disabled', false);
+		}
+    
+    	function receiveData(problemText, answer, authorName, code)
+    	{	
+			setAuthorName(authorName); //will only run the first time receiveData is called
+    		setCode(code); //will only run the first time receiveData is called
+    	
+    		$('#mathSpan').css('visibility', 'hidden');
+    		$('#mathSpan').html(problemText);
+    		//$('#actualAnswerDiv').html(answer);
+    		actualAnswer = answer;
+    		
+    		{% if user.is_authenticated and user.username == author %}
+		        $('#codeContainer').append('<a id="editLink" href="{% url "createproblem:edit" categoryId=problem.category.id problemId=id %}?nextURL={{request.path}}" class="editLink">edit</a>');
+		    {% endif %}
+    	}
+    	
+    	function setAuthorName(authorName)
+    	{
+    		setAuthorName = Function(""); //this function will only run one time because of this
+    		$('#authorDiv').html(authorName);
+    	}
+    	
+    	function setCode(code)
+    	{
+    		setCode = Function(""); //this function will only run one time because of this
+    		$('#codeElement').html(code);
+    	}
+		
+		function showCode(t)
+    	{
+    		t.innerHTML = "hide";
+			t.onclick = hideCode;
+			
+			$('#codeContainer').css('visibility','visible');
+    	}
+    	
+    	function hideCode()
+    	{ 		
+    		//the reason I am not using jquery in this method is because I can't figure out how to set the onclick with jquery
+    		var codeButton = document.getElementById("codeButtonDiv");
+	
+			codeButton.innerHTML = "show code";
+			codeButton.onclick = function() { showCode(codeButton) };
+	
+			$('#codeContainer').css('visibility','hidden');
+    	}
+		
+		function showAnswer(t)
+		{
+			t.innerHTML = "hide";
+			t.onclick = hideAnswer;
+			
+			$('#actualAnswerDiv').css('visibility', 'visible');
+		}
+
+		/*function hideAnswer()
+		{
+			//the reason I am not using jquery in this method is because I can't figure out how to set the onclick with jquery
+			var answerButton = document.getElementById("answerButtonDiv");
+	
+			answerButton.innerHTML = "answer";
+			answerButton.onclick = function() { showAnswer(answerButton) };
+			
+			$('#actualAnswerDiv').css('visibility', 'hidden');
+		}*/
+		
+		{% if verifiedByUser == False %}
+			function checkAnswer()
+			{
+				var temp = $('#answerInput').val();
+		
+				if($('#answerInput').val() == actualAnswer)
+				{
+					$('#problemWrapper').css('box-shadow', '0px 0px 10px #00ff00');
+				
+					$('#answerInput').prop('disabled', true);
+					$('#checkAnswerButton').prop('disabled', true);
+				
+					verificationAttempts--;
+				
+					if(verificationAttempts === 0)
+					{
+						$('#verificationSpan').html("Verified");
+						$('#verificationSpan').css('color', 'green');
+					
+						$.ajax({
+								url:"{% url 'publicproblem:submitVerification' %}", 
+								type:'POST',
+								data: { id:{{id}} },
+								success: function(data)
+										{
+											document.location.reload(true);
+										}
+							});
+					}
+				}
+				else
+				{
+					verificationAttempts = 3;
+			
+					$('#problemWrapper').css('box-shadow', '0px 0px 10px red');
+					setTimeout(function(){ $('#problemWrapper').css('box-shadow', '0px 0px 3px #68B4DF'); }, 200);
+				}
+			
+				if(verificationAttempts !== 0)
+				{
+					$('#verificationSpan').html(verificationAttempts);
+					$('#verificationSpan').prop('title', 'Solve this problem ' + verificationAttempts + ' times in a row to verify it');
+				}
+			}
+		{% else %}
+			function checkAnswer()
+			{
+				var temp = $('#answerInput').val();
+		
+				if($('#answerInput').val() == actualAnswer)
+				{
+					$('#problemWrapper').css('box-shadow', '0px 0px 10px #00ff00');
+				
+					$('#answerInput').prop('disabled', true);
+					$('#checkAnswerButton').prop('disabled', true);
+				}
+				else
+				{
+					$('#problemWrapper').css('box-shadow', '0px 0px 10px red');
+					setTimeout(function(){ $('#problemWrapper').css('box-shadow', '0px 0px 3px #68B4DF'); }, 200);
+				}
+			}
+		{% endif %}
+    </script>
+{% endblock %}

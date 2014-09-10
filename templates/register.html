@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'customauthentication/style.css' %}" />
+{% endblock %}
+
+{% block body %}
+	<form action="/accounts/register/" method="post" id="mainForm">
+		{% csrf_token %}
+		<div class="formDiv">
+			{{form}}
+			<input type="submit" value="Sign Up" class="signupButton" />
+		</div>
+	</form>
+	<div class="termsDiv">
+		By registering to use the website, you agree to the <a href="">Universal Terms, Acceptable Use Policy, and Privacy Policy</a>
+	</div>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'publicworkspace/style.css' %}" />
+<script src="{% static 'caja.js' %}"></script>
+
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!--Offline Script<script src="{% static 'offline-scripts/MathJax.js?config=TeX-AMS-MML_HTMLorMML' %}"></script>-->
+{% endblock %}
+
+{% block body %}
+<div id="guest"></div>
+<div class="menuItemOuterDiv">
+	{% for parent in parentList %}
+		<a href="{% url 'publicworkspace:displayCategory' categoryID=parent.id %}" class="menuItemLink">{{parent}}</a>
+	{% endfor %}
+</div>
+<div class="menuLine"></div>
+
+{% if categoriesList %}
+<div class="subCategoryOuterDiv">
+	{% for category in categoriesList %}
+		<a href="{% url 'publicworkspace:displayCategory' categoryID=category.id %}" class="categoryLink">{{category}}</a>
+	{% endfor %}
+</div>
+
+{% else %}
+<div class="loader"></div>
+{% if user.is_authenticated %}
+	{% if activated == True %}
+	<div class="outerCreateItDiv">
+		<p class="createItDiv">Don't see the problem you want? <a href="{% url 'createproblem:index' categoryId=theCategoryId %}?nextURL={{request.path}}">Create it!</a></p>
+	</div>
+	{% endif %}
+{% endif %}
+
+<div class="problemOuterDiv">
+	<div class="problemGroup">
+		{% for problemListTemp in problemsList %}
+			{% for problem in problemListTemp %}
+				{% if problem.verified %}
+					<a id="problemDiv-{{problem.id}}" href="{% url 'publicproblem:cajaInit' problem_id=problem.id %}" class="problem problemLinkVerified" data-problemId="{{problem.id}}"></a>
+				{% else %}
+					<a id="problemDiv-{{problem.id}}" href="{% url 'publicproblem:cajaInit' problem_id=problem.id %}" class="problem problemLinkUnverified" data-problemId="{{problem.id}}"></a>
+				{% endif %}
+			{% endfor %}
+		{% endfor %}
+	</div>
+</div>
+
+<script>
+	//allows us to do ajax post requests
+	//TODO verify license: taken straight from https://docs.djangoproject.com/en/1.6/ref/contrib/csrf/
+    var csrftoken = $.cookie('csrftoken');
+    
+    $.ajaxSetup(
+    {
+        beforeSend: function(xhr, settings) 
+        {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) 
+            {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    
+    function csrfSafeMethod(method) 
+    {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    //TODO verify license: end taken straight from https://docs.djangoproject.com/en/1.6/ref/contrib/csrf/
+	//end allows us to do ajax post requests
+
+    caja.initialize(
+    {
+	    //cajaServer: 'https://caja.appspot.com/',
+	    cajaServer: 'http://www.solutiamaxima.com',
+	    debug: true,
+	    maxAcceptableSeverity: 'NO_KNOWN_EXPLOIT_SPEC_VIOLATION'
+    });
+    
+    caja.load(document.getElementById('guest'), undefined, function(frame) 
+	{  
+    	caja.markFunction(receiveData);
+		tamedReceiveData = caja.tame(receiveData);
+	});
+    
+	var allProblems = $('.problem');
+	var problemTextList = [];
+	var count = 0; //TODO how does JavaScript variable initialization work?
+
+	for(var i=0; i < allProblems.length; i++)
+	{				
+	   $.ajax({
+				url:"{% url 'publicproblem:cajaAuthUrl' %}", 
+				type:'GET',
+				data: { id:allProblems[i].dataset.problemid, type:'getToken' },
+				indexValue: i,
+				success: function(url)
+						{
+		                    caja.load(document.getElementById('problemDiv-' + allProblems[this.indexValue].dataset.problemid), undefined, function(frame) 
+							{  
+								frame.code(url, "text/html").api({ transferData:tamedReceiveData }).run(function(result)
+								{  
+									count = count + 1;
+				
+									if(allProblems.length === count)
+									{
+										for(var j=0; j < problemTextList.length; j++)
+										{
+											$('#problemDiv-' + allProblems[j].dataset.problemid).html(problemTextList[j]);
+											
+											MathJax.Hub.Queue(["Typeset",MathJax.Hub,"problemDiv-" + allProblems[j].dataset.problemid], function() 
+									        { 
+									            if(j === allProblems.length) //TODO if the fadeout begins to happen before all of the problems are mathjaxed, try uncommenting this code
+									            {
+									                $('.loader').fadeOut('slow');
+									            }
+									        });
+										}
+									}
+								});
+							});
+						}
+				});
+	}
+	
+	if(allProblems.length === 0)
+	{
+		$('.loader').fadeOut('slow');
+	}
+	
+	function receiveData(problemText, answer, authorName, code)
+	{	
+		problemTextList.push(problemText); //TODO I thought the syntax was append???
+	
+		//$('#codeTag-caja-guest-0___').css('display', 'none'); //TODO this is not a good fix - figure out why the code displays on the page without this line
+		//$('#mathSpan').css('visibility', 'hidden'); //TODO I think I might be able to remove this everywhere I use caja, maybe
+		//$('#mathSpan').html(problemText);
+	}
+</script>
+{% endif %}
+{% endblock %}

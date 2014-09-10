@@ -1,0 +1,352 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'style.css' %}" />
+{% endblock %}
+
+{% block body %}
+    <script>
+    $(document).ready(function ()
+    {
+        $.getScript('https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js');
+    });
+    </script>
+	<h1 class="title">Solutia Maxima - Tutorial</h1>
+	
+	<div class="mainDiv">
+		<p>
+			Thanks for testing with us! We want to get you up and creating problems as soon as possible. 
+			If you want a little background on the vision for Solutia Maxima, keep reading. 
+			Otherwise, go straight down to <a href="#GettingStarted">Getting Started</a> to start creating problems right away.
+		</P>
+	</div>
+	
+	<div class="mainDiv">
+		<h2>Why Solutia Maxima?</h2>
+		<p>
+			...
+		</P>
+	</div>
+	
+	<div class="mainDiv">
+		<h2 id="GettingStarted" class="GettingStarted">Getting Started</h2>
+		<h3>Basic Rules</h3>
+		<p>
+			As you enjoy creating on Solutia Maxima, there are some specific rules we would like to point out:
+				<ul>
+					<li>Please obey all copyright laws</li>
+					<li>Keep everything that you create family friendly</li>
+					<li>Don't copy the text of anyone else's Solutia Maxima problems. You are free to use their code though :)</li>
+				</ul>
+				</br>
+				The above are just some rules we wanted to emphasize. Remember that by using the website for any reason, you need to accept and follow the <a href="{% url 'views.universal_terms' %}">Universal Terms</a></li>
+		</p>
+		<h3>Basic Idea</h3>
+		<p>
+			We want you to be able to create practice problems. Math problems, science problems;
+			 test questions, quiz questions - whatever type, kind, category, or complexity of problem that you desire. In order to achieve this desire, there are two things you must do.
+				<ol>
+					<li>Create the text of your problem</li>
+					<li>Program the solution to your problem (it’s not as hard as it sounds)</li>
+				</ol>
+		</p>
+		<h3>Creating the Text of Your Problem</h3>
+		<p>
+			First, navigate to the category that you want to create your problem in. You should see some text with a link saying something like “Create it!”. Click on that link, and you’ll be taken straight to the create problem page. Now, simply type up the text of your problem in the problem text editor (left-hand editor on the create problem page). If you would like a random number generated each time people see your problem, simply type r1. If you need more random numbers, use r2, r3, etc. Each of these random variables will be replaced with random numbers on the public problem page that users will see. The image below is an example of the create problem page with some sample text:
+		</p>
+	</div>
+	<div class="image">
+		<img src="/static/example1.png">
+	</div>
+	<div class="mainDiv">
+		<p>
+			When users see this problem, r1 will be replaced with a random number. See the problem in action <a href="{% url 'publicproblem:caja' problem_id=3 %}" target="_blank">here</a>. Notice how clicking the little arrow reloads r1 with a different number each time. Can you feel the power? This is a very simple example of course. Feel free to make things as complicated as you need them to be, with as many random variables as you want. You can also repeat random variables as many times as you want. For example:
+		</p>
+	</div>
+	<div class="image">
+		<img src="/static/example2.png">
+	</div>
+	<div class="mainDiv">
+		<p>
+			When users see this problem, they will always see the same two random numbers being added together. Take a look <a href="{% url 'publicproblem:caja' problem_id=4 %}" target="_blank">here</a>.
+		</p>
+		<h3>Coding the Solution to Your Problem</h3>
+		<p>
+			You must code the answer to your problem. Don’t worry! The basic concepts are very simple. To allow for the greatest amount of flexibility and freedom in problem creation, you will write the code for your problem in JavaScript. JavaScript is a wonderful little language that helps power thousands of websites. It will be perfect to help power your problem. Here is how it works: Remember when you created random variables (r1, r2, r3...) for your random numbers in the problem text editor? Those random variables are accessible from the code editor (right-hand editor on the create problem page). In the code editor, start by specifying the range of your variables. See the image below:
+		</p>
+	</div>
+	<div class="image">
+		<img src="/static/example3.png">
+	</div>
+	<div class="mainDiv">
+		<p>
+			Now r1 will always remain between 10 and 50. You don’t always have to specify a range. The default range for all random variables is from 1 to 10. It is important that if you specify the range that you do it <i>before</i> you do any real coding. Just trust us on that one. With your range set, now you may begin coding:
+		</p>
+	</div>
+	<div class="image">
+		<img src="/static/example4.png">
+	</div>
+	<div class="mainDiv">
+		<p>
+			There you go. The basic idea is that you set the “answer” variable equal to your answer. You can perform any math or other calculations you want to above the answer variable, just make sure that when all is typed and coded, that “answer” contains the solution to your problem. And that’s the idea! If you need more help learning JavaScript, head down to the <a href="#JavaScriptBasics">JavaScript Basics</a> section to learn specific techniques to help you in creating problems. Also, feel free to look at the code of any problem that has been submitted to see how it was done. The final step is to add a nice description to your problem. Try to be as specific as possible without being too lengthy. Let’s describe our little problem: 
+		</p>
+	</div>
+	<div class="image">
+		<img src="/static/example5.png">
+	</div>
+	<div class="mainDiv">
+		<p>
+			And that’s all you need to know for now. Hit submit, and your problem has been entered. If you want to see your problem, just navigate to the category that you entered your problem into, and it should be there. If you want to share your problem with others, just copy the url and send it out. And with all of that behind us, <a href="{% url 'publicworkspace:index' %}">get creating</a>!
+		</p>
+	</div>
+	<div class="mainDiv">
+		<h2 id="JavaScriptBasics" class="JavaScriptBasics">JavaScript Basics</h2>
+		<h3>Variables</h3>
+		<p>
+            Nearly everything you do while coding your problems will take place within variables. Variables are your friends. They allow you to store words and numbers and other things for later use. There are two basic steps you need to know to use a variable. First you give it a name, then you give it a value:
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                monkeys = 50
+	        </code>
+	    </div>
+		<p>
+            Now our variable <code>monkeys</code> contains the value 50. Whenever we need that value later on, we can simply use <code>monkeys</code> instead of 50. It gets really useful when you store more than just one number in a variable:
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                bananas = 20<br />
+	            monkeys = 50 + bananas
+	        </code>
+	    </div>
+		<p>
+            Now <code>monkeys</code> contains the sum of 50 and whatever bananas contains inside of it, which is the value 20. Variables can also hold words. We call them <i>strings</i>:
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                firstName = "Johnny"
+	        </code>
+	    </div>
+		<p>
+            <code>firstName</code> now contains the string with the value of “Johnny”. You can add two string variables together to get a different string:
+		</p>
+		<div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                firstName = "Johnny" <br />
+	            lastName = "Williams" <br />
+	            fullName = firstName + lastName
+	        </code>
+	    </div>
+		<p>
+            What do you think <code>fullName</code> contains now? Exactly right, “JohnnyWilliams”. What if we want to make it look nice by adding a space?
+		</p>
+		<div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                firstName = "Johnny" <br />
+	            lastName = "Williams" <br />
+	            fullName = firstName + " "  + lastName
+	        </code>
+	    </div>
+	    <p>
+            Now <code>fullName</code>’s value is “Johnny Williams”. I think you get the idea. Now, how would you combine strings and numbers (variables holding number values instead of string values)? 
+		</p>
+		<div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                firstHalf = "I have" <br />
+	            numApples = 50 <br />
+	            secondHalf = " apples" <br />
+	            completeSentence = firstHalf + numApples.toString() + secondHalf
+	        </code>
+	    </div>
+	    <p>
+            Now <code>completeSentence</code>’s value is "I have 50 apples". Whenever you want to add a number to your string, you need to use the .toString() method to make it compatible for use with strings.  
+		</p>
+		<p>
+		    And finally, remember that when coding for Solutia Maxima, you always want your variables to be global; basically, don’t put anything in front of your variable names when you are using them. If you don’t know what we’re talking about, don’t worry about it, you’ll be just fine.
+	    </p>
+	    <h3>Math</h3>
+		<p>
+            You’ve already seen how to do some basic math. Let’s review and then learn how to do some more complex calculations. And by the way:
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                // anything like this is known as a comment. These are ignored and do not <br />
+                // affect your code, but they can help provide you and others useful information
+	        </code>
+	    </div>
+	    <p>
+            Addition
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                answer = 50 + 30 // the result is 80
+	        </code>
+	    </div>
+	    <p>
+            Subtraction
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                answer = 789 - 345 // the result is 444
+	        </code>
+	    </div>
+	    <p>
+            Multiplication
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                answer = 3 * 7 // the result is 21
+	        </code>
+	    </div>
+	    <p>
+            Division
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                answer = 45 / 67 // the result is 0.6716417910447762
+	        </code>
+	    </div>
+	    <p>
+            Remainder (modulo)
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                answer = 5 % 3 // the result is 2
+	        </code>
+	    </div>
+	    <p>
+            Square Root
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                answer = Math.sqrt(144) // the result is 12
+	        </code>
+	    </div>
+	    <p>
+            Powers/Exponents
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                answer = Math.pow(4, 2) // the result is 4^2 or 16
+	        </code>
+	    </div>
+	    <p>
+            Absolute Value
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                answer = Math.abs(-46) // the result is 46
+	        </code>
+	    </div>
+	    <p>
+            Natural Log
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                answer = Math.log(2) // the result is 0.6931471805599453 (base e)
+	        </code>
+	    </div>
+	    <p>
+            Sine, Cosine, Tangent
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                answer = Math.sin(78) // the result is 0.5139784559875344 radians <br />
+	            answer = Math.cos(45) // the result is 0.5253219888177294 radians <br />
+	            answer = Math.tan(23) // the result is 1.5881530833912738 radians
+	        </code>
+	    </div>
+	    <p>
+            Arc Sine, Arc Cosine, Arc Tangent
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                answer = Math.asin(.6) // the result is 0.6435011087932844 radians <br />
+                answer = Math.acos(.34) // the result is 1.2238794292677349 radians <br />
+                answer = Math.atan(56) // the result is 1.5529410816553442 radians
+	        </code>
+	    </div>
+	    <h3>If...else Statements</h3>
+	    <p>
+            One of the beauties of programming is that you can teach your programs to make their own decisions. You do that using <i>conditional statements</i>, probably more commonly known as if...else statements. Let’s learn:
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                test = 5 <br />
+	            <br />
+	            if(test == 5) <br />
+	            { <br />
+		            &nbsp;&nbsp;&nbsp;&nbsp;test = 50 <br />
+	            }
+	        </code>
+	    </div>
+	    <p>
+            What will the result of <code>test</code> be after this code runs? That’s right! The result will be 50. Remember that inside of an if statement you need == to test for equality:
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                test = "Jimmy"<br />
+                <br />
+	            if(test == "Steve")<br />
+	            {<br />
+		            &nbsp;&nbsp;&nbsp;&nbsp;test = "equal"<br />
+	            }<br />
+	            else<br />
+	            {<br />
+		            &nbsp;&nbsp;&nbsp;&nbsp;test = "not equal"<br />
+	            }<br />
+	        </code>
+	    </div>
+	    <p>
+            What does <code>test</code> hold now? Incredible! The value of <code>test</code> is “not equal”. So what happened? Our if statement returned false, and so our code skipped down to the accompanying else statement and ran the code in there, thus setting <code>test</code> equal to “not equal”. Let’s cover one more variation:
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                myNumber = 600<br />
+                <br />
+	            if(myNumber != 600)<br />
+	            {<br />
+		            &nbsp;&nbsp;&nbsp;&nbsp;myNumber = 10<br />
+	            }<br />
+	            else if (myNumber == 300 && myNumber == 2)<br />
+	            {<br />
+		            &nbsp;&nbsp;&nbsp;&nbsp;myNumber = 30<br />
+	            }<br />
+	            else<br />
+	            {<br />
+		            &nbsp;&nbsp;&nbsp;&nbsp;myNumber = 5<br />
+	            }<br />
+	        </code>
+	    </div>
+	    <p>
+            The final value of <code>myNumber</code> is...5. Why? Because. Let’s explain. The first if statement failed because <code>myNumber</code> was equal to 600. It did not not equal 600. So, we went to the else if statement, which only runs if the statement above it returns false. The else if also failed, because <code>myNumber</code> did not equal 300 and certainly did not equal 2. The && is the conditional AND operator. Both conditions of the else if needed to be true for the else if to return true, because of the && that we placed there. So, everything failed, and the last else statement was executed, causing <code>myNumber</code> to be set to 5. We have done it. Good job my friend.
+		</p>
+		<p>
+		    Here’s a list of conditional operators you can use in your if...else statements:
+		</p>
+	    <div class="codeElement">
+	        <code class="prettyprint codeDiv">
+                == // equals: if(5 == 5) evaluates to true <br />
+	            != // does not equal: if(50 != 30) evaluates to true<br />
+	            ! // not: test = true<br />
+	            &nbsp;&nbsp;// &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!test) evaluates to false<br />
+	            && // AND: if(11 == 11 && 34 == 34) evaluates to true<br />
+	            || // OR: if(“monkey” == “orange” || “fun” == “fun”) evaluates to true<br />
+	            > // greater than:<br />
+	            >= // greater than or equal to: <br />
+	            < // less than<br />
+	            <= less than or equal to
+	        </code>
+	    </div>
+	    <p>
+            There’s a lot more to learn, but these have been some basics to get you started. Below are some links to important concepts that you might want to learn later:
+	    </p>
+	    <p>
+	        <a class="javascriptLinks" href="http://www.w3schools.com/js/js_loop_for.asp" target="_blank">Loops</a> <br />
+	        <a href="http://www.w3schools.com/js/js_arrays.asp" target="_blank">Arrays</a> <br />
+	        <a href="http://www.w3schools.com/js/js_objects.asp" target="_blank">Objects</a>
+	    </p>
+	</div>
+{% endblock %}

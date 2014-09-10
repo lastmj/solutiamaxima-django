@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html style="height:100%">
+	<head>
+			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+			<!--Offline Script<script src="{% static 'offline-scripts/jquery.min.js' %}"></script>-->
+			
+			<script src="{% static 'jquery-cookie/jquery.cookie.js' %}"></script>
+			<link rel="icon" type="image/png" href="/static/icon.png">
+			<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+			{% block head %}
+			{% endblock %}
+			<script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-52104202-1', 'solutiamaxima.com');
+              ga('send', 'pageview');
+            </script>
+	</head>
+	<body style="height:91%">
+		<script>
+			function showMenu(menu)
+			{
+				$('#menuItems').css('visibility','visible');
+				menu.onclick = function() { hideMenu(menu); };
+			}
+
+			function hideMenu(menu)
+			{
+			    $('#menuItems').css('visibility','hidden');
+			    menu.onclick = function() { showMenu(menu); };
+			}
+		</script>
+		<div style="min-height:100%;height:auto !important;height:100%;margin:0 auto -2em">
+			<div style="z-index:8;background:#68B4DF;position:fixed;top:0;left:0;width:100%;height:40px;box-shadow: 0px 0px 3px grey;">
+				<a href="{% url 'publicworkspace:index' %}"><img id="logo" src="{% static 'publicworkspace/images/logo3.png' %}" style="position:absolute;width:210px;top:9px;left:15px;cursor:pointer;" /></a>
+				<div id="menu" class="menu" onclick="showMenu(this)">&#9776;</div>
+				{% if user.is_authenticated %}
+				<div id="menuItems" class="menuItems">
+			        <a href="{% url 'privateworkshop:index' %}" class="menuLink">Workshop</a>
+			        <a href="{% url 'views.tutorial' %}" class="menuLink">Tutorial</a>
+			        <a href="{% url 'views.logout_view' %}" class="menuLink">Logout</a>
+				</div>
+				{% else %}
+				<div id="menuItems" class="menuItems">
+			        <a href="{% url 'views.login_view' %}" class="menuLink">login</a>
+				</div>
+				{% endif %}
+				{% if user.is_authenticated %}
+					<div style="color:white;margin-left:auto;margin-right:auto;width:500px;margin-top:10px">Suggestions, comments, and improvements - contact@solutiamaxima.com</div>
+					<div class="topRight">{{user.username}}</div>
+				{% endif %}
+			</div>
+			{% block body %}
+			{% endblock %}
+		</div>
+		<footer style="height:2em;margin-top:50px;margin-left:auto;margin-right:auto;width:208px">
+			<a href="{% url 'views.universal_terms' %}" style="text-decoration:none;color:#68B4DF">Universal Terms | Privacy Policy</a>
+		</footer>
+	</body>
+</html>

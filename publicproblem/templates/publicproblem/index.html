@@ -1,0 +1,47 @@
+<html>
+
+<head></head>
+
+<body>
+	<code id="codeTag" class="codeTag">
+	{{publicProblem.code | safe}}
+	</code>
+	<script type="text/javascript">
+		var answer;
+		var tempArray = [];
+	
+		{{publicProblem.vars}}
+		
+		{{publicProblem.javascript | safe}}
+		
+		for(var i=0; i < tempArray.length; i++)
+		{
+			if(tempArray[i].min != null && tempArray[i].max != null)
+			{
+				tempArray[i].value = Math.floor(Math.random() * (tempArray[i].max - tempArray[i].min) + tempArray[i].min);
+			}
+			else
+			{
+				tempArray[i].value = Math.floor(Math.random() * (10 - 1) + 1);
+			}
+		}
+		
+		for(var i=0; i < tempArray.length; i++)
+		{
+			{{publicProblem.assignValues}}
+		}
+		
+		var tempString = "{{publicProblem.text | safe}}";
+		
+		{{publicProblem.replaceReg}}
+		
+		{{publicProblem.javascript | safe}}
+		
+		var authorName = "{{publicProblem.author}}";
+		var code = document.getElementById("codeTag").innerHTML;
+		
+		transferData(tempString, answer, authorName, code);
+	</script>
+</body>
+
+</html>

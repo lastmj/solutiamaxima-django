@@ -1,0 +1,70 @@
+import os
+
+from django.shortcuts import render
+from django.http import HttpResponse
+
+from createproblem.models import PublicProblem
+from publicworkspace.models import Categories
+
+def index(request):
+	problems_list = PublicProblem.objects.all()
+	context = {"problems_list": problems_list}
+	return render(request, "publicworkspace/index.html", context)
+	
+def displayCategory(request, categoryID):
+	theCategory = Categories.objects.get(pk = categoryID)
+	categories_list = Categories.objects.all().filter(parentCategory = theCategory, activated=True).order_by('position')
+	problems_listTemp = PublicProblem.objects.all().filter(category = theCategory)
+	
+	problems_list = []
+	for i in xrange(0, len(problems_listTemp), 2):
+		if i + 1 >= len(problems_listTemp):
+			temp_list = [problems_listTemp[i]]
+		else:
+			temp_list = [problems_listTemp[i], problems_listTemp[i+1]]
+		problems_list.append(temp_list)
+	
+	context = {"categories_list": categories_list, "problems_list": problems_list, "thisCategory":theCategory, "activated":getattr(theCategory, "activated")}
+	
+	return render(request, "publicworkspace/practice-page.html", context)
+	
+def importCategories(request):
+    #file = open(os.environ['OPENSHIFT_DATA_DIR'] + '/categories', 'r')
+    file = open('categories', 'r')
+    
+    previousParent = None
+    parentList = []
+    parent = None
+    
+    for line in file:
+        temp = line.split('*')
+        
+        try:
+            parent = Categories.objects.get(title = temp[1], parentCategory=previousParent)
+            if parent != previousParent:
+                parentList.append(parent)
+                previousParent = parent
+        except Exception:
+            if len(parentList) != 0:
+                parentList.pop()
+            counter = len(parentList)
+            parentListCopy = parentList[:]
+            for p in parentList:
+                try:
+                    parent = Categories.objects.get(title = temp[1], parentCategory=parentList[counter-1])
+                    parentListCopy.append(parent)
+                    previousParent = parent
+                    break
+                except Exception:
+                    counter = counter - 1
+                    parentListCopy.pop()
+            parentList = parentListCopy[:]
+        
+        category = Categories()
+        category.title = temp[0]
+        category.parentCategory = parent
+        category.position = temp[2]
+        category.activated = True
+        category.save()
+        
+    return HttpResponse('good job kid')

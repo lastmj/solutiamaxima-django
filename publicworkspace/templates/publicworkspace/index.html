@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'publicworkspace/style.css' %}" />
+{% endblock %}
+
+{% block body %}
+<div class="outerDiv">
+	<div class="categoryGroup">
+		<div class="category"><a href="{% url 'publicworkspace:displayCategory' categoryID=1 %}" class="mainCategoryLink">Math</a></div>
+		<div class="category"><a href="{% url 'publicworkspace:displayCategory' categoryID=2 %}" class="mainCategoryLink">Physics</a></div>
+		<div class="category"><a href="{% url 'publicworkspace:displayCategory' categoryID=3 %}" class="mainCategoryLink">Chemistry</a></div>
+		<div class="category"><a href="{% url 'publicworkspace:displayCategory' categoryID=4 %}" class="mainCategoryLink">Economics</a></div>
+	</div>
+</div>
+{% endblock %}

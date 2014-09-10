@@ -1,0 +1,131 @@
+a.editLink:hover
+{
+    text-decoration:none;
+}
+
+.editLinkDiv
+{
+    /*visibility:hidden;*/
+    position:absolute;
+	left:472px;
+	bottom:-17px;
+	font-size:.8em;
+	cursor:pointer;
+	font-family: Times New Roman;
+}
+
+.problemDiv
+{
+	display:block;
+	width:600px;
+	min-width:500px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:100px;
+	box-shadow: 0px 0px 3px #68B4DF;
+}
+
+.problem
+{
+	padding-top:2%;
+	padding-bottom:2%;
+	width:90%;
+	margin:0 auto;
+	font-family:Ubuntu-title, sans-serif;
+	font-size:1em;
+}
+
+.codeButtonDiv
+{
+	font-size:.75em;
+	color:grey;
+	cursor:pointer;
+	position:absolute;
+	margin-left:5px;
+	margin-top:3px;
+}
+
+.answerButtonDiv
+{
+	font-family:Ubuntu, sans-serif;
+	font-size:1em;
+	color:#68B4DF;
+	cursor:pointer;
+	position:absolute;
+	margin-left:540px;
+	margin-top:-23px;
+}
+
+.authorDiv
+{
+	color:grey;
+	font-size:.75em;
+	position:relative;
+	float:right;
+	margin-top:5px;
+	margin-right:10px;
+	white-space:no-wrap;
+}
+
+.actualAnswer
+{
+	visibility:hidden;
+	/*color:#68B4DF;*/
+	font-size:1em;
+	padding:10px;
+	white-space:no-wrap;
+	box-shadow: 0px 0px 3px #68B4DF;
+	opacity:100%;
+	background-color:white;
+	/*position:relative;
+	float:right;
+	margin-top:-15px;
+	margin-right:10px;*/
+	position:absolute;
+	margin-left:560px;
+	margin-top:5px;
+}
+
+.codeElement
+{
+	visibility:hidden;
+	/*color:grey;*/
+	font-size:1em;
+	padding:10px;
+	position:absolute;
+	float:right;
+	margin-top:25px;
+	margin-left:3px;
+	white-space:no-wrap;
+	box-shadow: 0px 0px 3px #68B4DF;
+	opacity:100%;
+	background-color:white;
+}
+
+.codeTag
+{
+	display:none;
+}
+
+.arrowRight
+{
+	width:0;
+	height:0;
+	border-top:30px solid transparent;
+	border-bottom:30px solid transparent;
+	border-left:30px solid #E0E0E0;
+	float:left;
+	margin-left:625px;
+	margin-top:-90px;
+	cursor:pointer;
+}
+
+.mathSpan
+{
+	visibility:hidden;
+}
+
+#arrowDiv:hover
+{
+	border-left:30px solid #68B4DF;
+}

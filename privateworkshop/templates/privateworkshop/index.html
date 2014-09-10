@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'privateworkshop/style.css' %}" />
+{% endblock %}
+
+{% block body %}
+<h1 class="header">Welcome to your workshop, {{user.username}}</h1>
+<p class="subtitle">Click below to edit your problems</p>
+
+<div class="outerDiv">
+	<div class="categoryGroup">
+		{% for problem in problems_list %}
+				<div class="problem"><a href="{% url 'createproblem:edit' categoryId=problem.category.id problemId=problem.id %}?nextURL={{request.path}}" class="problemLink">{{problem.title | title}}</a></div>
+			<br>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'publicworkspace/style.css' %}" />
+{% endblock %}
+
+{% block body %}
+{% if categories_list %}
+
+<div class="subCategoryOuterDiv">
+	{% for category in categories_list %}
+		<div class="subCategory"><a href="{% url 'publicworkspace:displayCategory' categoryName=category.id %}" class="categoryLink">{{category}}</a></div>
+	{% endfor %}
+</div>
+
+{% else %}
+
+{% if user.is_authenticated %}
+	{% if activated == True %}
+	<p class="createIt">Don't see the problem you want? <a href="{% url 'createproblem:index' category=thisCategory %}">Create it!</a></p>
+	{% endif %}
+{% endif %}
+
+<div class="outerDiv">
+	<div class="categoryGroup">
+		{% for problemListTemp in problems_list %}
+			{% for problem in problemListTemp %}
+				<div class="problem"><a href="{% url 'publicproblem:caja' problem_id=problem.id %}" class="problemLink">{{problem}}</a></div>
+			{% endfor %}
+			<br>
+		{% endfor %}
+	</div>
+</div>
+{% endif %}
+{% endblock %}
