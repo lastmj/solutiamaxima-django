@@ -109,6 +109,7 @@ if ON_OPENSHIFT:
 		    'USER': 'lastmj',
 		    'PASSWORD': 'solmaxutiaima5010',
 		    'HOST': mysql.server,
+		    'PORT':'',
          }
      }
 else:
