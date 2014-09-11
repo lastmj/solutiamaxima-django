@@ -47,7 +47,7 @@ TEMPLATE_DEBUG = DEBUG
 if DEBUG:
      ALLOWED_HOSTS = []
 else:
-     ALLOWED_HOSTS = ['*']
+     ALLOWED_HOSTS = ['www.solutiamaxima.com']
 
 # Application definition
 
@@ -67,6 +67,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
