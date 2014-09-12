@@ -34,8 +34,10 @@ def caja(request, problem_id=None, authToken=None):
         return render(request, "publicproblem/caja.html", {'verifiedByUser':verifiedByUser, 'request':request, 'token':value, 'id':problem_id, 'author':publicProblem.author.username, 'problem':publicProblem})
     else:
         try:
-            #original = signer.unsign(authToken[1:], max_age=5)
-            original = signer.unsign(authToken[1:])
+            if settings.DEBUG = True:
+                original = signer.unsign(authToken[1:])
+            else:
+                original = signer.unsign(authToken[1:], max_age=5)
         except signing.BadSignature:
             return HttpResponse("incorrect token")
 
