@@ -69,8 +69,7 @@
         
         caja.initialize(
 		{
-			//cajaServer: 'https://caja.appspot.com/',
-			cajaServer: 'http://www.solutiamaxima.com',
+			cajaServer: 'https://www.solutiamaxima.com',
 			debug: true,
 			maxAcceptableSeverity: 'NO_KNOWN_EXPLOIT_SPEC_VIOLATION'
 		});
@@ -99,8 +98,8 @@
 				MathJax.Hub.Queue(["Typeset",MathJax.Hub,"problemDiv"], function() 
 				{ 
 					$('#mathSpan').css('visibility', 'visible');
-					//$.getScript('https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js'); //TODO Offline-Only
-					$.getScript("{% static 'offline-scripts/run_prettify.js' %}"); //offline script //TODO Offline-Only
+					$.getScript('https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js'); //TODO Offline-Only
+					//$.getScript("{% static 'offline-scripts/run_prettify.js' %}"); //offline script //TODO Offline-Only
 					$('#problemDiv').height($('#problemDiv').height());
 				});
 				$('.loader').fadeOut('slow');
