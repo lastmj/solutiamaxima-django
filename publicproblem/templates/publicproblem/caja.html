@@ -18,7 +18,7 @@
 		<div id="problemDiv" class="problemDiv"><span id='mathSpan' class='mathSpan'></span></div>
 	
 		<div id="codeButtonDiv" class="codeButtonDiv" onclick="showCode(this)">show code</div>
-		<input id="answerInput" type="text" class="answerInput" autofocus></input>
+		<input id="answerInput" title="Right click to show answer" type="text" class="answerInput" autofocus></input>
 		
 		{% if verifiedByUser %}
 			<button id="checkAnswerButton" type="button" class="checkAnswerButton" onclick="checkAnswer()">Check</button>
@@ -33,10 +33,12 @@
 		    <code id="codeElement" class="prettyprint"></code>
 		</div>
 		
-		{% if verifiedByUser and problem.verified == False %}
-			<span id="verificationSpan" title="You have verified this problem" class="verificationSpanUnverified" onclick="checkAnswer()">Verified</span>
-		{% elif problem.verified == False %}
-			<span id="verificationSpan" title="Solve this problem 3 times in a row to verify it" class="verificationSpanVerified" onclick="checkAnswer()">3</span>
+		{% if request.user.username != author %}
+		    {% if verifiedByUser and problem.verified == False %}
+			    <span id="verificationSpan" title="You have verified this problem" class="verificationSpanUnverified" onclick="checkAnswer()">Verified</span>
+		    {% elif problem.verified == False %}
+			    <span id="verificationSpan" title="Solve this problem 3 times in a row to verify it" class="verificationSpanVerified" onclick="checkAnswer()">3</span>
+		    {% endif %}
 		{% endif %}
 	</div>	
     <script>
@@ -62,6 +64,8 @@
         }
         //TODO verify license: end taken straight from https://docs.djangoproject.com/en/1.6/ref/contrib/csrf/
     	//end allows us to do ajax post requests
+    
+        setUpRightClickMenu();
     
     	var verificationAttempts = 3; //TODO look into initialization in JavaScript
         var cajaFrame;
@@ -202,7 +206,7 @@
 			$('#actualAnswerDiv').css('visibility', 'hidden');
 		}*/
 		
-		{% if verifiedByUser == False %}
+		{% if verifiedByUser == False and request.user.username != author %}
 			function checkAnswer()
 			{
 				var temp = $('#answerInput').val();
@@ -265,5 +269,29 @@
 				}
 			}
 		{% endif %}
+		
+		function setUpRightClickMenu()
+		{
+		    var answerInput = $('answerInput');
+		    
+		    answerInput.oncontextmenu = function() { alert('hi'); };
+		    
+		    if(answerInput.addEventListener)
+		    {
+		        answerInput.addEventListener('contextmenu', function(e)
+		        {
+		            alert('Yeehaaa one!');
+		            e.preventDefault();
+		        }, false);
+		    }
+		    else
+		    {
+		        answerInput.attachEvent('oncontextmenu', function()
+		        {
+		            alert('Yeehaaa two!');
+		            window.event.returnValue = false;
+		        });
+		    }
+		}
     </script>
 {% endblock %}
