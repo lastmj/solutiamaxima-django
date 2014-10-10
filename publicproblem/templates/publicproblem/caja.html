@@ -272,10 +272,8 @@
 		
 		function setUpRightClickMenu()
 		{
-		    var answerInput = $('answerInput');
-		    
-		    answerInput.oncontextmenu = function() { alert('hi'); };
-		    
+		    var answerInput = document.getElementById('answerInput');
+
 		    if(answerInput.addEventListener)
 		    {
 		        answerInput.addEventListener('contextmenu', function(e)
