@@ -19,6 +19,7 @@
 	
 		<div id="codeButtonDiv" class="codeButtonDiv" onclick="showCode(this)">show code</div>
 		<input id="answerInput" title="Right click to show answer" type="text" class="answerInput" autofocus></input>
+		<div id="inputContextMenu" class="hide"></div>
 		
 		{% if verifiedByUser %}
 			<button id="checkAnswerButton" type="button" class="checkAnswerButton" onclick="checkAnswer()">Check</button>
@@ -270,7 +271,7 @@
 			}
 		{% endif %}
 		
-		function setUpRightClickMenu()
+		function setUpRightClickMenu() //TODO Why does adding event listeners not work when the element is obtained through jquery?
 		{
 		    var answerInput = document.getElementById('answerInput');
 
@@ -278,7 +279,7 @@
 		    {
 		        answerInput.addEventListener('contextmenu', function(e)
 		        {
-		            alert('Yeehaaa one!');
+		            $('#inputContextMenu').attr('class', 'inputContextMenu');
 		            e.preventDefault();
 		        }, false);
 		    }
@@ -286,7 +287,7 @@
 		    {
 		        answerInput.attachEvent('oncontextmenu', function()
 		        {
-		            alert('Yeehaaa two!');
+		            $('#inputContextMenu').attr('class', 'inputContextMenu');
 		            window.event.returnValue = false;
 		        });
 		    }
