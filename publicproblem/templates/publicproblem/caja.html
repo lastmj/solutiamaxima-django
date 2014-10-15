@@ -14,19 +14,12 @@
 {% block body %}
     <div class="loader"></div>
 	<div id="guest"></div>
+	<div id="inputContextMenu" class="hide"></div>
 	<div id="problemWrapper" class="problemWrapper">
 		<div id="problemDiv" class="problemDiv"><span id='mathSpan' class='mathSpan'></span></div>
-	
 		<div id="codeButtonDiv" class="codeButtonDiv" onclick="showCode(this)">show code</div>
 		<input id="answerInput" title="Right click to show answer" type="text" class="answerInput" autofocus></input>
-		<div id="inputContextMenu" class="hide"></div>
-		
-		{% if verifiedByUser %}
-			<button id="checkAnswerButton" type="button" class="checkAnswerButton" onclick="checkAnswer()">Check</button>
-		{% else %}
-			<button id="checkAnswerButton" type="button" class="checkAnswerButton" onclick="checkAnswer()">Check</button>
-		{% endif %}
-		
+	    <button id="checkAnswerButton" type="button" class="checkAnswerButton" onclick="checkAnswer()">Check</button>
 		<div id="authorDiv" class="authorDiv"></div>
 		<div id="arrowDiv" class="arrowRight" onclick="cajole()"></div>
 		<div id="actualAnswerDiv" class="actualAnswerDiv"></div>
@@ -34,7 +27,7 @@
 		    <code id="codeElement" class="prettyprint"></code>
 		</div>
 		
-		{% if request.user.username != author %}
+		{% if user.is_authenticated and user.username != author %}
 		    {% if verifiedByUser and problem.verified == False %}
 			    <span id="verificationSpan" title="You have verified this problem" class="verificationSpanUnverified" onclick="checkAnswer()">Verified</span>
 		    {% elif problem.verified == False %}
@@ -207,7 +200,7 @@
 			$('#actualAnswerDiv').css('visibility', 'hidden');
 		}*/
 		
-		{% if verifiedByUser == False and request.user.username != author %}
+		{% if user.is_authenticated and verifiedByUser == False and request.user.username != author %}
 			function checkAnswer()
 			{
 				var temp = $('#answerInput').val();
@@ -279,7 +272,11 @@
 		    {
 		        answerInput.addEventListener('contextmenu', function(e)
 		        {
+		            //var parentCoordinates = ()
+		        
 		            $('#inputContextMenu').attr('class', 'inputContextMenu');
+		            $('#inputContextMenu').css('top', e.clientY);
+		            $('#inputContextMenu').css('left', e.clientX);
 		            e.preventDefault();
 		        }, false);
 		    }
@@ -288,6 +285,8 @@
 		        answerInput.attachEvent('oncontextmenu', function()
 		        {
 		            $('#inputContextMenu').attr('class', 'inputContextMenu');
+		            $('#inputContextMenu').css('top', window.event.clientY);
+		            $('#inputContextMenu').css('left', window.event.clientX);
 		            window.event.returnValue = false;
 		        });
 		    }
