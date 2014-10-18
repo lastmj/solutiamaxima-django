@@ -12,11 +12,13 @@
 	
 		{{publicProblem.vars}}
 		
-		{{publicProblem.javascript | safe}}
+		{% for u in publicProblem.userMinMaxLines %}
+		    {{u | safe}}
+		{% endfor %}
 		
 		for(var i=0; i < tempArray.length; i++)
 		{
-			if(tempArray[i].min != null && tempArray[i].max != null)
+			if(tempArray[i].min != null && tempArray[i].max != null $$)
 			{
 				tempArray[i].value = Math.floor(Math.random() * (tempArray[i].max - tempArray[i].min) + tempArray[i].min);
 			}

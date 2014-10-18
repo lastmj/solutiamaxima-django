@@ -74,8 +74,12 @@ def caja(request, problem_id=None, authToken=None):
 
     #make javascript look nice in html
     publicProblem.code = publicProblem.javascript.replace('\n', "<br />")
-
-    publicProblem.javascript = ";" + publicProblem.javascript
+    
+    #grab the user variable min/max configuration
+    publicProblem.userMinMaxLines = re.findall(r'r\d+\..*=.*;', publicProblem.javascript) #TODO we might want to also get rid of the \n characters
+    
+    publicProblem.javascript = re.sub(r'r\d+\..*=.*;', r'', publicProblem.javascript) #delete user min/max lines TODO we might want to also get rid of the \n characters
+    #publicProblem.javascript = ";" + publicProblem.javascript #I can probably delete this line now
 
     #Turn all javascript variables into local variables
     variableList = re.findall(r'[;|\s*]([a-zA-Z_$][a-zA-Z0-9_$]*\s*=)', publicProblem.javascript)
