@@ -12,6 +12,10 @@
 	
 		{{publicProblem.vars}}
 		
+		{% for v in publicProblem.variableSet %}
+		    var {{v}};
+		{% endfor %}
+		
 		{% for u in publicProblem.userMinMaxLines %}
 		    {{u | safe}}
 		{% endfor %}

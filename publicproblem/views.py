@@ -74,19 +74,16 @@ def caja(request, problem_id=None, authToken=None):
 
     #make javascript look nice in html
     publicProblem.code = publicProblem.javascript.replace('\n', "<br />")
+
+    #grab all javascript variables so that we can declare them for ES5 Strict Mode compliance
+    publicProblem.javascript = ";" + publicProblem.javascript
+    variableList = re.findall(r'[((|;|\s*]([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=', publicProblem.javascript)
+    variableSet = set(variableList)
+    publicProblem.variableSet = variableSet
     
     #grab the user variable min/max configuration
     publicProblem.userMinMaxLines = re.findall(r'r\d+\..*=.*;', publicProblem.javascript) #TODO we might want to also get rid of the \n characters
-    
     publicProblem.javascript = re.sub(r'r\d+\..*=.*;', r'', publicProblem.javascript) #delete user min/max lines TODO we might want to also get rid of the \n characters
-    #publicProblem.javascript = ";" + publicProblem.javascript #I can probably delete this line now
-
-    #Turn all javascript variables into local variables
-    variableList = re.findall(r'[;|\s*]([a-zA-Z_$][a-zA-Z0-9_$]*\s*=)', publicProblem.javascript)
-    variableSet = set(variableList)
-
-    for v in variableSet:
-        publicProblem.javascript = re.sub(r'[;|^|\s*]' + v, "var " + v, publicProblem.javascript, 1)
 
     context = {"publicProblem": publicProblem}
 
