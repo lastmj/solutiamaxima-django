@@ -24,9 +24,10 @@ a.editLink
     z-index:1000;
     position:absolute;
     display:block;
-    width:500px;
-    height:500px;
-    background-color:red;
+    width:100px;
+    height:25px;
+	background-color:white;
+	box-shadow: 0px 0px 3px #68B4DF;
     top:0;
     left:0;
 }

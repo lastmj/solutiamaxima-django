@@ -14,7 +14,7 @@
 {% block body %}
     <div class="loader"></div>
 	<div id="guest"></div>
-	<div id="inputContextMenu" class="hide"></div>
+	<div id="inputContextMenu" class="hide">Show Answer</div>
 	<div id="problemWrapper" class="problemWrapper">
 		<div id="problemDiv" class="problemDiv"><span id='mathSpan' class='mathSpan'></span></div>
 		<div id="codeButtonDiv" class="codeButtonDiv" onclick="showCode(this)">show code</div>
@@ -105,7 +105,7 @@
 		});
 		
 		function cajole()
-		{		
+		{	
 			var url;
 		
 	        $.ajax({
