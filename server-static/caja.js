@@ -25,7 +25,7 @@
  */
 
 var caja = (function () {
-  var cajaBuildVersion = '5687';
+  var cajaBuildVersion = '5693m';
   var defaultServer = 'https://caja.appspot.com/';
   var defaultFrameGroup;
   var readyQueue = [];
@@ -60,7 +60,7 @@ var caja = (function () {
       // TODO(jasvir): Make it so this does not pollute the host page
       // namespace but rather just the loaderFrame
       installSyncScript(rndName,
-        proxyServer ? String(proxyServer) : caja['server']
+        (proxyServer ? String(proxyServer) : caja['server'])
         + '/cajole?url=' + encodeURIComponent(url.toString())
         + '&input-mime-type=' + encodeURIComponent(mime)
         + '&transform=PROXY'
@@ -560,8 +560,8 @@ var caja = (function () {
     var frameWin = createFrame(filename);
     // debuggable or minified.  ?debug=1 inhibits compilation in shindig
     var suffix = config['debug'] ? '.js?debug=1' : '.opt.js?debug=1';
-    //var url = joinUrl(config['resources'], cajaBuildVersion + '/' + filename + suffix);
-    var url = joinUrl('/static/', cajaBuildVersion + '/' + filename + '.js'); //TODO Jordan Last changed this August 8, 2014
+    //var url = joinUrl(config['resources'],cajaBuildVersion + '/' + filename + suffix); //TODO Jordan Last commented this line out this October 17, 2014
+    var url = joinUrl('/static/', cajaBuildVersion + '/' + filename + '.js'); //TODO Jordan Last added this line October 17, 2014
     // The particular interleaving of async events shown below has been found
     // necessary to get the right behavior on Firefox 3.6. Otherwise, the
     // iframe silently fails to invoke the cajaIframeDone___ callback.
@@ -634,7 +634,7 @@ var caja = (function () {
   function installAsyncScript(frameWin, scriptUrl) {
     var frameDoc = frameWin['document'];
     var script = frameDoc.createElement('script');
-    script.setAttribute('type', 'text/javascript');  
+    script.setAttribute('type', 'text/javascript');
     script.src = scriptUrl;
     frameDoc.body.appendChild(script);
   }
@@ -791,4 +791,3 @@ var caja = (function () {
 if (typeof window !== 'undefined') {
   window['caja'] = caja;
 }
-
