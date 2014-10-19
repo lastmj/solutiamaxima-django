@@ -159,6 +159,12 @@ answer = (r1 * 2) / 50" form="inputForm"></textarea>
 	</div>
     <script>
         var cajaFrame;
+        var cajaConsoleOutput = [];
+        var cajaConsole = {};
+        cajaConsole.log = function()
+                            {
+                                cajaConsoleOutput.push(arguments);
+                            };
 	    
 	    //allows us to do ajax post requests
 	    //TODO verify license: taken straight from https://docs.djangoproject.com/en/1.6/ref/contrib/csrf/
@@ -187,7 +193,8 @@ answer = (r1 * 2) / 50" form="inputForm"></textarea>
 	    {
 		    cajaServer: 'https://www.solutiamaxima.com',
 		    debug: true,
-		    maxAcceptableSeverity: 'NO_KNOWN_EXPLOIT_SPEC_VIOLATION'
+		    maxAcceptableSeverity: 'NO_KNOWN_EXPLOIT_SPEC_VIOLATION',
+		    console: cajaConsole
 	    });
 	    
 	    caja.load(document.getElementById('guest'), undefined, function(frame) 
