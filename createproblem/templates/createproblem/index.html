@@ -245,41 +245,14 @@ answer = (r1 * 2) / 50" form="inputForm"></textarea>
     	
     	function preview()
     	{    	    	
-    	    var userCode = "function fake(){'use strict';\n" + codeEditor.getValue() + "\n}";
-    	    
-    	    //var options = {globalstrict:true};
-    	    //var options = {undef:true};
-    	    var options = {};
-    	    
-    	    var passed = JSHINT(userCode, options); //TODO add the correct options
-    	    if(passed)
-    	    {
-    	        $.ajax({
-					url:"{% url 'createproblem:submitPreview' %}", 
-					type:'POST',
-					data: {problemText: editor.getData(), problemJavaScript: codeEditor.getValue()},
-					async:false
-				});
-				
-				cajole();    
-    	    }
-    	    else
-    	    {
-    	        var errors = JSHINT.errors;
-    	        var errorString = "";
-    	        for(var i=0; i < errors.length; i++)
-    	        {
-    	            var error = errors[i];
-    	            
-    	            if(error != null)
-    	            {
-    	                errorString += "<span style='color:red'>error</span> line " + (error.line-1) + ", col " + error.character + ", " + error.reason + "<br>";
-       	            }
-    	        }
-    	        
-    	        $('#mathSpan').html(errorString);
-    	        $('#mathSpan').css('visibility', 'visible');
-    	    }
+	        $.ajax({
+				url:"{% url 'createproblem:submitPreview' %}", 
+				type:'POST',
+				data: {problemText: editor.getData(), problemJavaScript: codeEditor.getValue()},
+				async:false
+			});
+			
+			cajole();    
 				
 			$('#greyOut').css('visibility', 'visible');
 	        $('#problemWrapper').css('visibility', 'visible');
@@ -295,29 +268,57 @@ answer = (r1 * 2) / 50" form="inputForm"></textarea>
     	
     	function cajole()
 		{		
-		    var url;
+		    var userCode = "function fake(){'use strict';\n" + codeEditor.getValue() + "\n}";
+    	    
+    	    //var options = {globalstrict:true};
+    	    //var options = {undef:true};
+    	    var options = {};
+    	    
+    	    var passed = JSHINT(userCode, options); //TODO add the correct options
+    	    if(passed)
+		    {
+		        var url;
 		
-	       $.ajax({
-					url:"{% url 'publicproblem:cajaAuthUrl' %}", 
-					type:'GET',
-					data: { id:{{id}}, type:'getToken' },
-					success: function(data)
-							{
-		                        url = data;
-							},
-					async:false
-					});
+	           $.ajax({
+					    url:"{% url 'publicproblem:cajaAuthUrl' %}", 
+					    type:'GET',
+					    data: { id:{{id}}, type:'getToken' },
+					    success: function(data)
+							    {
+		                            url = data;
+							    },
+					    async:false
+					    });
 		
-			cajaFrame.code(url, "text/html").api({ transferData:tamedReceiveData }).run(function(result)
-			{ 
-				MathJax.Hub.Queue(["Typeset",MathJax.Hub,"problemDiv"], function() 
-				{ 
-					$('#mathSpan').css('visibility', 'visible');
-					setProblemDivHeight(); //will only run the first time
-				});
-			});
+			    cajaFrame.code(url, "text/html").api({ transferData:tamedReceiveData }).run(function(result)
+			    { 
+				    MathJax.Hub.Queue(["Typeset",MathJax.Hub,"problemDiv"], function() 
+				    { 
+					    $('#mathSpan').css('visibility', 'visible');
+					    setProblemDivHeight(); //will only run the first time
+				    });
+			    });
 			
-			hideAnswer();
+			    hideAnswer();
+		    }
+		    else
+    	    {
+    	        var errors = JSHINT.errors;
+    	        var errorString = "";
+    	        for(var i=0; i < errors.length; i++)
+    	        {
+    	            var error = errors[i];
+    	            
+    	            if(error != null)
+    	            {
+    	                errorString += "<span style='color:red'>error</span> line " + (error.line-1) + ", col " + error.character + ", " + error.reason + "<br>";
+       	            }
+    	        }
+    	        
+    	        $('#problemDiv').height("auto");
+    	        $('#mathSpan').html(errorString);
+    	        $('#mathSpan').css('visibility', 'visible');
+    	    }
 		}
 		
 		function setProblemDivHeight()
