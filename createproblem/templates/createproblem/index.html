@@ -245,9 +245,11 @@ answer = (r1 * 2) / 50" form="inputForm"></textarea>
     	
     	function preview()
     	{    	    	
-    	    var userCode = codeEditor.getValue();
+    	    var userCode = "function fake(){'use strict';\n" + codeEditor.getValue() + "\n}";
     	    
-    	    var options = {strict:true};
+    	    //var options = {globalstrict:true};
+    	    //var options = {undef:true};
+    	    var options = {};
     	    
     	    var passed = JSHINT(userCode, options); //TODO add the correct options
     	    if(passed)
@@ -255,7 +257,7 @@ answer = (r1 * 2) / 50" form="inputForm"></textarea>
     	        $.ajax({
 					url:"{% url 'createproblem:submitPreview' %}", 
 					type:'POST',
-					data: {problemText: editor.getData(), problemJavaScript: userCode},
+					data: {problemText: editor.getData(), problemJavaScript: codeEditor.getValue()},
 					async:false
 				});
 				
@@ -271,7 +273,7 @@ answer = (r1 * 2) / 50" form="inputForm"></textarea>
     	            
     	            if(error != null)
     	            {
-    	                errorString += "<span style='color:red'>error</span> line " + error.line + ", col " + error.character + ", " + error.reason + "<br>";
+    	                errorString += "<span style='color:red'>error</span> line " + (error.line-1) + ", col " + error.character + ", " + error.reason + "<br>";
        	            }
     	        }
     	        
