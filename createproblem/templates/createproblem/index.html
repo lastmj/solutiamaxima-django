@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="{% static 'createproblem/codemirror-4.1/lib/codemirror.css' %}">
 	<script src="{% static 'createproblem/codemirror-4.1/mode/javascript/javascript.js' %}"></script>
 	<script src="{% static 'createproblem/codemirror-4.1/addon/display/placeholder.js' %}"></script>
+	<script src="{% static 'utilities/jslint.js' %}"></script>
 	
 	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
 	<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -244,17 +245,39 @@ answer = (r1 * 2) / 50" form="inputForm"></textarea>
     	
     	function preview()
     	{    	    	
-    	    $.ajax({
+    	    var userCode = codeEditor.getValue();
+    	    var passed = JSLINT(userCode); //TODO add the correct options
+    	    if(passed)
+    	    {
+    	        $.ajax({
 					url:"{% url 'createproblem:submitPreview' %}", 
 					type:'POST',
-					data: {problemText: editor.getData(), problemJavaScript: codeEditor.getValue()},
+					data: {problemText: editor.getData(), problemJavaScript: userCode},
 					async:false
 				});
 				
-				cajole();
+				cajole();    
+    	    }
+    	    else
+    	    {
+    	        var errors = JSLINT.errors;
+    	        var errorString = "";
+    	        for(var i=0; i < errors.length; i++)
+    	        {
+    	            var error = errors[i];
+    	            
+    	            if(error != null)
+    	            {
+    	                errorString += "<span style='color:red'>error:</span> Line " + error.line + " - " + error.reason + "<br>";
+       	            }
+    	        }
+    	        
+    	        $('#mathSpan').html(errorString);
+    	        $('#mathSpan').css('visibility', 'visible');
+    	    }
 				
-				$('#greyOut').css('visibility', 'visible');
-    	        $('#problemWrapper').css('visibility', 'visible');
+			$('#greyOut').css('visibility', 'visible');
+	        $('#problemWrapper').css('visibility', 'visible');
     	}
     	
     	function hidePreview()
