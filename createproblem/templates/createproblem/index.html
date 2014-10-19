@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="{% static 'createproblem/codemirror-4.1/lib/codemirror.css' %}">
 	<script src="{% static 'createproblem/codemirror-4.1/mode/javascript/javascript.js' %}"></script>
 	<script src="{% static 'createproblem/codemirror-4.1/addon/display/placeholder.js' %}"></script>
-	<script src="{% static 'utilities/jslint.js' %}"></script>
+	<script src="{% static 'utilities/jshint.js' %}"></script>
 	
 	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
 	<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -246,7 +246,10 @@ answer = (r1 * 2) / 50" form="inputForm"></textarea>
     	function preview()
     	{    	    	
     	    var userCode = codeEditor.getValue();
-    	    var passed = JSLINT(userCode); //TODO add the correct options
+    	    
+    	    var options = {strict:true};
+    	    
+    	    var passed = JSHINT(userCode, options); //TODO add the correct options
     	    if(passed)
     	    {
     	        $.ajax({
@@ -260,7 +263,7 @@ answer = (r1 * 2) / 50" form="inputForm"></textarea>
     	    }
     	    else
     	    {
-    	        var errors = JSLINT.errors;
+    	        var errors = JSHINT.errors;
     	        var errorString = "";
     	        for(var i=0; i < errors.length; i++)
     	        {
@@ -268,7 +271,7 @@ answer = (r1 * 2) / 50" form="inputForm"></textarea>
     	            
     	            if(error != null)
     	            {
-    	                errorString += "<span style='color:red'>error:</span> Line " + error.line + " - " + error.reason + "<br>";
+    	                errorString += "<span style='color:red'>error</span> line " + error.line + ", col " + error.character + ", " + error.reason + "<br>";
        	            }
     	        }
     	        
